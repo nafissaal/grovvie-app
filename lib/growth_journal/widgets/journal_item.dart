@@ -4,7 +4,7 @@ import 'package:grovvie/growth_journal/model/journal_model.dart';
 class JournalItem extends StatelessWidget {
   const JournalItem(this.journal, {super.key});
 
-  final Journal journal;
+  final Journals journal;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class JournalItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              journal.title,
+              journal.title!,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.titleLarge,
             ),

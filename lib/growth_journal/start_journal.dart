@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grovvie/firestore_service.dart';
 import 'package:grovvie/growth_journal/journal_page.dart';
 import 'package:grovvie/growth_journal/model/journal_model.dart';
 import 'package:grovvie/growth_journal/widgets/journal_list_tile.dart';
@@ -13,7 +14,7 @@ class StartJournal extends StatefulWidget {
 
 class _StartJournalState extends State<StartJournal> {
   final String jurnalUrl = 'https://blog.mindsetworks.com/what-s-my-mindset';
-  final List<Journal> registeredJournals = [];
+  final FirestoreService _firestoreService = FirestoreService();
 
   void _showJournalDialog() {
     showDialog(
@@ -44,86 +45,16 @@ class _StartJournalState extends State<StartJournal> {
     );
   }
 
-  void _addJournal(Journal journal) {
-    setState(() {
-      registeredJournals.add(journal);
-    });
+  Future<void> _addJournal(Journals journal) async {
+    await _firestoreService.addJournal(journal);
   }
 
-  void removeJournal(Journal journal) {
-    final journalIndex = registeredJournals.indexOf(journal);
-
-    setState(() {
-      registeredJournals.remove(journal);
-    });
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 3),
-        content: const Text('Jurnal telah dihapus'),
-        action: SnackBarAction(
-          label: 'Batalkan',
-          onPressed: () {
-            setState(() {
-              registeredJournals.insert(journalIndex, journal);
-            });
-          },
-        ),
-      ),
-    );
+  Future<void> removeJournal(String journalId) async {
+    await _firestoreService.deleteJournal(journalId);
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget mainContent = Center(
-      child: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Isi jurnal ini jika kamu merasa tidak puas, takut, cemas, atau emosi negatif lainnya. Jurnal ini lebih baik digunakan sebagai pendaping terapi, tunjukkan jurnal ini ke terapis pada saat konsultasi.',
-              style: Theme.of(context).textTheme.labelSmall,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => JournalPage(
-                      onAddJournal: _addJournal,
-                    ),
-                  ),
-                );
-              },
-        
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Mulai'),
-                  SizedBox(width: 10),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 20,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    if (registeredJournals.isNotEmpty) {
-      mainContent = JournalListTile(
-        journals: registeredJournals,
-        onRemoveJournal: removeJournal,
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Growth Journal'),
@@ -134,7 +65,71 @@ class _StartJournalState extends State<StartJournal> {
           )
         ],
       ),
-      body: mainContent,
+      body: StreamBuilder<List<Journals>>(
+        stream: _firestoreService.getUserJournals(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (snapshot.hasData) {
+            final journals = snapshot.data!;
+            if (journals.isNotEmpty) {
+              return JournalListTile(
+                journals: journals,
+                onRemoveJournal: (Journals journal) async {
+                  await removeJournal(journal.id!);
+                },
+              );
+            } else {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Isi jurnal ini jika kamu merasa tidak puas, takut, cemas, atau emosi negatif lainnya. Jurnal ini lebih baik digunakan sebagai pendaping terapi, tunjukkan jurnal ini ke terapis pada saat konsultasi.',
+                        style: Theme.of(context).textTheme.labelSmall,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      FilledButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => JournalPage(
+                                onAddJournal: _addJournal,
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Mulai'),
+                            SizedBox(width: 10),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          }
+
+          return const Center(child: Text('Unknown error'));
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(

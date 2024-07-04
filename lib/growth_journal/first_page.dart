@@ -11,7 +11,7 @@ class FirstPage extends StatefulWidget {
 
   final TextEditingController titleController;
   final TextEditingController firstStoryController;
-  final void Function(Journal journal) onAddJournal;
+  final void Function(Journals journal) onAddJournal;
 
   @override
   State<FirstPage> createState() => _FirstPageState();

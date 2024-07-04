@@ -9,7 +9,7 @@ class SavedJournal extends StatefulWidget {
     required this.journal,
   });
 
-  final Journal journal;
+  final Journals journal;
 
   @override
   State<SavedJournal> createState() => _SavedJournalState();
@@ -21,7 +21,7 @@ class _SavedJournalState extends State<SavedJournal> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.journal.title,
+          widget.journal.title!,
           overflow: TextOverflow.ellipsis,
         ),
       ),
@@ -33,14 +33,14 @@ class _SavedJournalState extends State<SavedJournal> {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelLarge,
           ),
-          JournalCard(journalCardContent: widget.journal.firstStory),
+          JournalCard(journalCardContent: widget.journal.firstStory!),
           const SizedBox(height: 20),
           Text(
             'Pola Fixed Mindset',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelLarge,
           ),
-          for (var pattern in widget.journal.selectedPatterns)
+          for (var pattern in widget.journal.selectedPatterns!)
             JournalCard(journalCardContent: pattern),
           const SizedBox(height: 20),
           Text(
@@ -48,7 +48,7 @@ class _SavedJournalState extends State<SavedJournal> {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelLarge,
           ),
-          JournalCard(journalCardContent: widget.journal.newStory),
+          JournalCard(journalCardContent: widget.journal.newStory!),
         ],
       ),
     );

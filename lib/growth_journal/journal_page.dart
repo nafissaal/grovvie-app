@@ -10,7 +10,7 @@ import 'package:grovvie/growth_journal/widgets/expansion_tile_builder.dart';
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key, required this.onAddJournal});
 
-  final void Function(Journal journal) onAddJournal;
+  final void Function(Journals journal) onAddJournal;
 
   @override
   State<JournalPage> createState() => _JournalPageState();
@@ -127,13 +127,12 @@ class _JournalPageState extends State<JournalPage> {
 
   void _submitJournalData() {
     widget.onAddJournal(
-      Journal(
+      Journals(
         title: _titleController.text,
         firstStory: _firstStoryController.text,
         newStory: _newStoryController.text,
         date: DateTime.now(),
         selectedPatterns: _selectedPatterns,
-        id: '',
       ),
     );
 

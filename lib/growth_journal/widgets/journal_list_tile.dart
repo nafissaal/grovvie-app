@@ -3,8 +3,6 @@ import 'package:grovvie/growth_journal/model/journal_model.dart';
 import 'package:grovvie/growth_journal/saved_journal.dart';
 import 'package:grovvie/growth_journal/widgets/journal_item.dart';
 
-
-
 class JournalListTile extends StatefulWidget {
   const JournalListTile({
     super.key,
@@ -12,8 +10,8 @@ class JournalListTile extends StatefulWidget {
     required this.onRemoveJournal,
   });
 
-  final List<Journal> journals;
-  final void Function(Journal journal) onRemoveJournal;
+  final List<Journals> journals;
+  final void Function(Journals journal) onRemoveJournal;
 
   @override
   State<JournalListTile> createState() => _JournalListTileState();
