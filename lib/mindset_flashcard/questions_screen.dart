@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:grovvie/education/model/course_data.dart';
-import 'package:grovvie/education/widget/answer_button.dart';
+import 'package:grovvie/mindset_flashcard/flashcard_model.dart';
+import 'package:grovvie/mindset_flashcard/widget/answer_button.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({
     super.key,
     required this.onSelectAnswer,
-    required this.questions,
   });
 
   final void Function(String answer) onSelectAnswer;
-  final List<QuizQuestion> questions;
 
   @override
   State<QuestionsScreen> createState() => _QuestionsScreenState();
@@ -28,7 +26,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentQuestion = widget.questions[currentQuestionIndex];
+    final currentQuestion = flashcardQuizzes[currentQuestionIndex];
 
     return SizedBox(
       width: double.infinity,
@@ -40,7 +38,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           children: [
             Text(
               currentQuestion.text,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),

@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:grovvie/education/model/card_content.dart';
-
+import 'package:grovvie/education/model/course_model.dart';
 
 class CardBuilder extends StatelessWidget {
   const CardBuilder({
     super.key,
     required this.content,
+    required this.onTapCard,
   });
 
-  final CardContent content;
+  final CourseContent content;
+  final VoidCallback onTapCard;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          clipBehavior: Clip.hardEdge,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          clipBehavior: Clip.antiAlias,
           child: InkWell(
-            splashColor: Colors.blue.withAlpha(30),
-            onTap: content.onTap,
+            splashColor: Theme.of(context).colorScheme.secondaryContainer,
+            onTap: onTapCard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Image.asset(
-                  content.assetName,
-                  height: 160,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+                Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Image.network(
+                      content.assetUrl,
+                      height: 150,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ],
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -59,7 +67,7 @@ class CardBuilder extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
       ],
     );
   }

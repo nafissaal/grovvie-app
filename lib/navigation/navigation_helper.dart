@@ -1,11 +1,15 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grovvie/application_state.dart';
 import 'package:grovvie/education/course_page.dart';
 import 'package:grovvie/education/education_page.dart';
+import 'package:grovvie/education/model/course_model.dart';
 import 'package:grovvie/growth_journal/start_journal.dart';
 import 'package:grovvie/mindset_flashcard/flashcard_page.dart';
+import 'package:grovvie/mindset_flashcard/quiz_page.dart';
 import 'package:grovvie/navigation/bottom_navigation_page.dart';
+import 'package:provider/provider.dart';
 
 class NavigationHelper {
   static final NavigationHelper _instance = NavigationHelper._internal();
@@ -41,6 +45,9 @@ class NavigationHelper {
   static const String flashcardPath = '/flashcard';
   static const String journalPath = '/journal';
   static const String profilePath = '/profile';
+
+  static const String coursePath = '/courses/:courseId';
+  static const String quizPath = '/quiz';
 
   factory NavigationHelper() {
     return _instance;
@@ -98,21 +105,41 @@ class NavigationHelper {
             routes: [
               GoRoute(
                 path: profilePath,
-                pageBuilder: (context, state) {
-                  return getPage(
-                    child: ProfileScreen(
+                builder: (context, state) {
+                  return Consumer<ApplicationState>(
+                      builder: (context, appState, _) {
+                    if (appState.currentUser == null) {
+                      return const Center(
+                        child: Text('Silahkan login terlebih dahulu'),
+                      );
+                    }
+                    return ProfileScreen(
+                      key: ValueKey(appState.emailVerified),
                       providers: const [],
                       appBar: AppBar(
                         title: const Text('Profil'),
                       ),
                       actions: [
-                        SignedOutAction((context) {
-                          context.pushReplacement(educationPath);
-                        }),
+                        SignedOutAction(
+                          ((context) {
+                            context.go(educationPath);
+                          }),
+                        ),
                       ],
-                    ),
-                    state: state,
-                  );
+                      children: [
+                        Visibility(
+                          visible: !appState.emailVerified,
+                          child: OutlinedButton(
+                            child:
+                                const Text('Periksa kembali status verifikasi'),
+                            onPressed: () {
+                              appState.refreshLoggedInUser();
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  });
                 },
               ),
             ],
@@ -132,68 +159,63 @@ class NavigationHelper {
         },
       ),
       GoRoute(
-        parentNavigatorKey: parentNavigatorKey,
         path: '/sign-in',
-        pageBuilder: (context, state) {
-          return getPage(
-            child: SignInScreen(
-              headerBuilder: (context, constraints, shrinkOffset) {
-                return Padding(
-                  padding: const EdgeInsets.all(30),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset('assets/images/app-logo.png'),
-                  ),
-                );
-              },
-              subtitleBuilder: (context, action) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: action == AuthAction.signIn
-                      ? const Text(
-                          'Selamat datang di aplikasi Grovvie, silahkan login')
-                      : const Text(
-                          'Selamat datang di aplikasi Grovvie, silahkan buat akun'),
-                );
-              },
-              actions: [
-                ForgotPasswordAction(((context, email) {
-                  final uri = Uri(
-                    path: '/sign-in/forgot-password',
-                    queryParameters: <String, String?>{
-                      'email': email,
-                    },
-                  );
-                  context.push(uri.toString());
-                })),
-                AuthStateChangeAction(
-                  ((context, state) {
-                    final user = switch (state) {
-                      SignedIn state => state.user,
-                      UserCreated state => state.credential.user,
-                      _ => null
-                    };
-                    if (user == null) {
-                      return;
-                    }
-                    if (state is UserCreated) {
-                      user.updateDisplayName(user.email!.split('@')[0]);
-                    }
-                    if (!user.emailVerified) {
-                      user.sendEmailVerification();
-                      const snackBar = SnackBar(
-                          content: Text(
-                              'Silahkan periksa email untuk memverifikasi alamat email Anda'));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                    //here using condition
-
-                    context.pushReplacement(educationPath);
-                  }),
+        builder: (context, state) {
+          return SignInScreen(
+            headerBuilder: (context, constraints, shrinkOffset) {
+              return Padding(
+                padding: const EdgeInsets.all(30),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Image.network('https://firebasestorage.googleapis.com/v0/b/grovvie.appspot.com/o/app-logo.png?alt=media&token=cb6bdf88-314c-4881-9bb0-194b351a0c6f'),
                 ),
-              ],
-            ),
-            state: state,
+              );
+            },
+            subtitleBuilder: (context, action) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: action == AuthAction.signIn
+                    ? const Text(
+                        'Selamat datang di aplikasi Grovvie, silahkan login')
+                    : const Text(
+                        'Selamat datang di aplikasi Grovvie, silahkan buat akun'),
+              );
+            },
+            actions: [
+              ForgotPasswordAction(((context, email) {
+                final uri = Uri(
+                  path: '/sign-in/forgot-password',
+                  queryParameters: <String, String?>{
+                    'email': email,
+                  },
+                );
+                context.push(uri.toString());
+              })),
+              AuthStateChangeAction(
+                ((context, state) {
+                  final user = switch (state) {
+                    SignedIn state => state.user,
+                    UserCreated state => state.credential.user,
+                    _ => null
+                  };
+                  if (user == null) {
+                    return;
+                  }
+                  if (state is UserCreated) {
+                    user.updateDisplayName(user.email!.split('@')[0]);
+                  }
+                  if (!user.emailVerified) {
+                    user.sendEmailVerification();
+                    const snackBar = SnackBar(
+                      content: Text(
+                          'Silahkan periksa email untuk memverifikasi alamat email Anda'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                  context.go(educationPath);
+                }),
+              ),
+            ],
           );
         },
         routes: [
@@ -210,11 +232,40 @@ class NavigationHelper {
         ],
       ),
       GoRoute(
-        path: '/courses/:id',
+        path: coursePath,
+        builder: (context, state) {
+          final courseId = state.pathParameters['courseId'];
+          if (courseId == null) {
+            return const Center(child: Text('Course ID tidak ditemukan'));
+          }
+
+          return FutureBuilder<CourseContent?>(
+            future: CourseContent.fromFirestore(courseId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else if (!snapshot.hasData || snapshot.data == null) {
+                return const Scaffold(
+                  body: Center(
+                    child: Text('Data tidak ditemukan'),
+                  ),
+                );
+              } else {
+                return CoursePage(content: snapshot.data!);
+              }
+            },
+          );
+        },
+      ),
+      GoRoute(
+        path: quizPath,
         pageBuilder: (context, state) {
-          final courseId = state.pathParameters['id']!;
           return getPage(
-            child: CoursePage(courseId: courseId),
+            child: const QuizPage(),
             state: state,
           );
         },

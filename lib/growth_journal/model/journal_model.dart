@@ -11,6 +11,7 @@ class Journals {
     this.selectedPatterns,
     this.newStory,
     this.date,
+    this.userId,
   });
 
   final String? id;
@@ -19,9 +20,30 @@ class Journals {
   final List<String>? selectedPatterns;
   final String? newStory;
   final DateTime? date;
+  final String? userId;
 
   String get formattedDate {
     return formatter.format(date!);
+  }
+
+  Journals copyWith({
+    String? id,
+    String? title,
+    String? firstStory,
+    List<String>? selectedPatterns,
+    String? newStory,
+    DateTime? date,
+    String? userId,
+  }) {
+    return Journals(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      firstStory: firstStory ?? this.firstStory,
+      selectedPatterns: selectedPatterns ?? this.selectedPatterns,
+      newStory: newStory ?? this.newStory,
+      date: date ?? this.date,
+      userId: userId ?? this.userId,
+    );
   }
 
   factory Journals.fromFirestore(
@@ -38,6 +60,7 @@ class Journals {
           : null,
       newStory: data?['newStory'],
       date: (data?['date'] as Timestamp?)?.toDate(),
+      userId: data?['userId'],
     );
   }
 
@@ -49,6 +72,7 @@ class Journals {
       if (selectedPatterns != null) "selectedPatterns": selectedPatterns,
       if (newStory != null) "newStory": newStory,
       if (date != null) "date": date,
+      if (userId != null) "userId": userId,
     };
   }
 }

@@ -7,25 +7,19 @@ class FirestoreService {
 
   Future<void> addJournal(Journals journal) async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) throw Exception('No authenticated user');
+    if (user == null) throw Exception('Pengguna belum terautentikasi');
 
     final docRef = _db.collection('journals').doc();  // Generate a new document reference with an ID
-    final newJournal = journal.copyWith(id: docRef.id);  // Create a new journal with the generated ID
+    final newJournal = journal.copyWith(id: docRef.id, userId: user.uid);  // Create a new journal with the generated ID
 
-    await docRef.set({
-      'id': newJournal.id,
-      'title': newJournal.title,
-      'firstStory': newJournal.firstStory,
-      'selectedPatterns': newJournal.selectedPatterns,
-      'newStory': newJournal.newStory,
-      'date': newJournal.date,
-      'userId': user.uid,
-    });
+    await docRef.set(
+      newJournal.toFirestore()
+    );
   }
-  
-  Stream<List<Journals>> getUserJournals() {
+
+  Stream<List<Journals>> getUserJournals(String uid) {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) throw Exception('No authenticated user');
+    if (user == null) throw Exception('Pengguna belum terautentikasi');
 
     return _db
         .collection('journals')
@@ -42,22 +36,3 @@ class FirestoreService {
   }
 }
 
-extension JournalsCopyWith on Journals {
-  Journals copyWith({
-    String? id,
-    String? title,
-    String? firstStory,
-    List<String>? selectedPatterns,
-    String? newStory,
-    DateTime? date,
-  }) {
-    return Journals(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      firstStory: firstStory ?? this.firstStory,
-      selectedPatterns: selectedPatterns ?? this.selectedPatterns,
-      newStory: newStory ?? this.newStory,
-      date: date ?? this.date,
-    );
-  }
-}

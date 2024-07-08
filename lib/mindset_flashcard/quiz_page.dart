@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:grovvie/education/model/course_data.dart';
+import 'package:grovvie/mindset_flashcard/flashcard_model.dart';
 
 import 'questions_screen.dart';
 import 'results_screen.dart';
 
 class QuizPage extends StatefulWidget {
-  const QuizPage({
-    super.key,
-    required this.quiz,
-    required this.quizId,
-  });
-
-  final Quiz quiz;
-  final String quizId;
+  const QuizPage({super.key});
 
   @override
   State<QuizPage> createState() => _QuizPageState();
@@ -22,16 +15,10 @@ class _QuizPageState extends State<QuizPage> {
   List<String> _selectedAnswers = [];
   var _activeScreen = 'questions-screen';
 
-  // void _switchScreen() {
-  //   setState(() {
-  //     _activeScreen = 'questions-screen';
-  //   });
-  // }
-
   void _chooseAnswer(String answer) {
     _selectedAnswers.add(answer);
 
-    if (_selectedAnswers.length == widget.quiz.questions.length) {
+    if (_selectedAnswers.length == flashcardQuizzes.length) {
       setState(() {
         _activeScreen = 'results-screen';
       });
@@ -47,23 +34,14 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(context) {
-    // Widget screenWidget = QuizStart(_switchScreen);
-    Widget screenWidget = QuestionsScreen(onSelectAnswer: _chooseAnswer,
-        questions: widget.quiz.questions,);
-
-    // if (_activeScreen == 'questions-screen') {
-    //   screenWidget = QuestionsScreen(
-    //     onSelectAnswer: _chooseAnswer,
-    //     questions: widget.quiz.questions,
-    //   );
-    // }
+    Widget screenWidget = QuestionsScreen(
+      onSelectAnswer: _chooseAnswer,
+    );
 
     if (_activeScreen == 'results-screen') {
       screenWidget = ResultsScreen(
         chosenAnswers: _selectedAnswers,
         onRestart: restartQuiz,
-        // is questions necessary?
-        questions: widget.quiz.questions,
       );
     }
 
@@ -81,9 +59,10 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ),
         child: Center(
-          child: Expanded(child: screenWidget),
+          child: screenWidget,
         ),
       ),
+
     );
   }
 }

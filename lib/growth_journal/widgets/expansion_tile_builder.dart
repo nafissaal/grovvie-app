@@ -18,7 +18,7 @@ class ExpansionTileBuilder extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          title: Text(expansionContent.title), // Access title from widget
+          title: Text(expansionContent.title),
           leading: Icon(expansionContent.leadingIcon),
           children: [
             ListTile(

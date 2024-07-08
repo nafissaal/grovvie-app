@@ -12,8 +12,12 @@ class ApplicationState extends ChangeNotifier {
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
+
   bool _emailVerified = false;
   bool get emailVerified => _emailVerified;
+
+  User? _currentUser;
+  User? get currentUser => _currentUser;
 
   Future<void> init() async {
     await Firebase.initializeApp(
@@ -22,14 +26,16 @@ class ApplicationState extends ChangeNotifier {
     FirebaseUIAuth.configureProviders([
       EmailAuthProvider(),
     ]);
-        
+
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loggedIn = true;
         _emailVerified = user.emailVerified;
+        _currentUser = user;
       } else {
         _loggedIn = false;
         _emailVerified = false;
+        _currentUser = null;
       }
       notifyListeners();
     });
@@ -43,5 +49,7 @@ class ApplicationState extends ChangeNotifier {
     }
 
     await currentUser.reload();
+    _currentUser = FirebaseAuth.instance.currentUser;
+    notifyListeners();
   }
 }

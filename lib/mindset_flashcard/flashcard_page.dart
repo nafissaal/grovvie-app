@@ -1,6 +1,8 @@
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:grovvie/mindset_flashcard/flashcard_model.dart';
+import 'package:grovvie/navigation/navigation_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'flashcard_builder.dart';
@@ -28,7 +30,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
         return AlertDialog(
           title: const Text('Informasi'),
           content: const Text(
-              'Temukan sumbernya! Tekan tombol "Lihat Sumber" di bawah untuk melihat sumber konten flashcard'),
+              'Temukan sumbernya! Tekan tombol "Sumber" di bawah untuk melihat sumber konten flashcard'),
           actions: [
             FilledButton(
               onPressed: () async {
@@ -58,6 +60,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
   void flipCard() {
     _controller.toggleCard();
+  }
+
+  void _navigateToQuiz() {
+    context.push(NavigationHelper.quizPath);
   }
 
   @override
@@ -111,10 +117,8 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   ),
                 ],
               ),
-              // if (_quiz != null) // Ensure _quiz is not null before using it
               TextButton(
-                // onPressed: widget.quiz!.onPressed,
-                onPressed: () {},
+                onPressed: _navigateToQuiz,
                 child: const Text('Kerjakan kuis'),
               ),
             ],

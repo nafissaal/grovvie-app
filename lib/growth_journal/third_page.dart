@@ -66,8 +66,6 @@ class ThirdPage extends StatelessWidget {
         TextField(
           controller: newStoryController,
           keyboardType: TextInputType.multiline,
-          // to have unlimited lines for multiline input
-          // You can also specify a large number instead of null to limit the number of lines
           maxLines: null,
           minLines: 5,
           decoration: const InputDecoration(

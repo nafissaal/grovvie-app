@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grovvie/application_state.dart';
 import 'package:grovvie/growth_journal/first_page.dart';
 import 'package:grovvie/growth_journal/model/expansion_content.dart';
 import 'package:grovvie/growth_journal/model/journal_model.dart';
@@ -6,6 +7,7 @@ import 'package:grovvie/growth_journal/second_page.dart';
 import 'package:grovvie/growth_journal/third_page.dart';
 import 'package:grovvie/growth_journal/widgets/button_journal.dart';
 import 'package:grovvie/growth_journal/widgets/expansion_tile_builder.dart';
+import 'package:provider/provider.dart';
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key, required this.onAddJournal});
@@ -33,7 +35,7 @@ class _JournalPageState extends State<JournalPage> {
               'Setiap sesi harus diisi terlebih dahulu sebelum berpindah ke sesi lain'),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: const Text('Tutup'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -51,10 +53,10 @@ class _JournalPageState extends State<JournalPage> {
         return AlertDialog(
           title: const Text('Pemberitahuan'),
           content: const Text(
-              'Ini adalah sesi terakhir. Klik OK untuk menyimpan, jurnal tidak dapat diedit setelah disimpan.'),
+              'Ini adalah sesi terakhir. Klik tombol di bawah untuk menyimpan, jurnal tidak dapat diedit setelah disimpan.'),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: const Text('Simpan'),
               onPressed: () {
                 _submitJournalData();
                 Navigator.of(context).pop();
@@ -74,8 +76,8 @@ class _JournalPageState extends State<JournalPage> {
               'Growth Journal adalah jurnal yang siap bantu kamu mengenali pola fixed mindset , lalu mengajakmu menuju cara berpikir yang lebih positif dan berkembang. \n \nContohnya, besok adalah hari pertamamu bekerja, kamu khawatir kemampuanmu paling rendah. Tetapi, berasumsi seperti itu hanya akan membuatmu cemas. Sebaliknya, penting untuk menyadari bahwa terdapat salah satu pola Fixed Mindset pada pikiranmu, yaitu All-or-None Judgement (menilai diri sendiri dengan ekstrem). Seharusnya, kamu fokus pada bagaimana kamu dapat meningkatkan kemampuanmu. Dan, mungkin kemampuanmu tidak serendah itu, serta selalu ada orang yang dapat membantumu!'),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
+              onPressed: () => Navigator.pop(context, 'Tutup'),
+              child: const Text('Tutup'),
             ),
           ],
         ),
@@ -118,25 +120,27 @@ class _JournalPageState extends State<JournalPage> {
               'Berikut adalah pertanyaan yang dapat membantumu berpikir secara lebih seimbang dan mengurangi kecemasanmu:\n\nApa efek dari mempercayai pikiran ini? Apa yang akan terjadi jika aku tidak mempercayai pikiran ini?\n\nApa bukti yang mendukung pikiranku? Apa bukti yang menentang pikiranku?\n\nApakah ada penjelasan alternatif?\n\nApa hal terburuk yang dapat terjadi dan apakah aku akan survive? Apa hal terbaik yang dapat terjadi? Apa skenario yang paling mungkin terjadi?\n\nJika temanku ada di situasi ini, apa yang akan aku katakan kepadanya?\n\nApa yang bisa aku lakukan terhadap hal ini?'),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
+              onPressed: () => Navigator.pop(context, 'Tutup'),
+              child: const Text('Tutup'),
             ),
           ],
         ),
       );
 
   void _submitJournalData() {
-    widget.onAddJournal(
-      Journals(
-        title: _titleController.text,
-        firstStory: _firstStoryController.text,
-        newStory: _newStoryController.text,
-        date: DateTime.now(),
-        selectedPatterns: _selectedPatterns,
-      ),
-    );
-
-    Navigator.of(context).pop();
+    final user = context.read<ApplicationState>().currentUser;
+    if (user != null) {
+      widget.onAddJournal(
+        Journals(
+          title: _titleController.text,
+          firstStory: _firstStoryController.text,
+          newStory: _newStoryController.text,
+          date: DateTime.now(),
+          selectedPatterns: _selectedPatterns,
+        ),
+      );
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -259,7 +263,7 @@ class _JournalPageState extends State<JournalPage> {
         content: SecondPage(
             firstStoryController: _firstStoryController,
             selectedPatterns: _selectedPatterns,
-            onPatternSelected: (patterns) {
+            onSelectionChanged: (patterns) {
               setState(() {
                 _selectedPatterns = patterns;
               });

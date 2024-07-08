@@ -7,13 +7,13 @@ class SecondPage extends StatefulWidget {
     super.key,
     required this.firstStoryController,
     required this.selectedPatterns,
-    required this.onPatternSelected,
+    required this.onSelectionChanged,
   });
 
   final TextEditingController firstStoryController;
   final List<String> selectedPatterns;
   
-  final Function(List<String>) onPatternSelected;
+  final Function(List<String>) onSelectionChanged;
 
   @override
   State<SecondPage> createState() => _SecondPageState();
@@ -36,11 +36,9 @@ class _SecondPageState extends State<SecondPage> {
       } else {
         widget.selectedPatterns.remove(selectedPattern);
       }
-      widget.onPatternSelected(widget.selectedPatterns);
+      widget.onSelectionChanged(widget.selectedPatterns);
     });
   }
-
-  // List<bool> checkboxValues = [false, false, false, false, false, false];
 
   @override
   Widget build(BuildContext context) {
@@ -72,17 +70,11 @@ class _SecondPageState extends State<SecondPage> {
             return CheckboxBuilder(
               title: currentPattern,
               value: widget.selectedPatterns.contains(currentPattern),
-              // checkboxValues[index],
               onChanged: (bool? selected) {
                 if (selected != null) {
                   _onPatternSelected(currentPattern, selected);
                 }
               },
-              // (value) {
-              //   setState(() {
-              //     checkboxValues[index] = value!;
-              //   });
-              // },
             );
           },
         ),

@@ -10,6 +10,22 @@ class FlashcardData {
   final String growthMindset;
 }
 
+class QuizQuestion {
+  const QuizQuestion({
+    required this.text,
+    required this.answers,
+  });
+
+  final String text;
+  final List<String> answers;
+
+  List<String> get shuffledAnswers {
+    final shuffledList = List.of(answers);
+    shuffledList.shuffle();
+    return shuffledList;
+  }
+}
+
 List<FlashcardData> flashcards = [
   FlashcardData(
     title: 'Fokus',
@@ -46,5 +62,70 @@ List<FlashcardData> flashcards = [
     title: 'Kesuksesan Orang Lain',
     fixedMindset: 'Merasa terancam dengan kesuksesan orang lain',
     growthMindset: 'Merasa terinspirasi dan belajar dari kesuksesan orang lain',
+  ),
+  FlashcardData(
+    title: 'Kesalahan',
+    fixedMindset: 'Kesalahan adalah tanda kegagalan',
+    growthMindset:
+        'Kesalahan adalah hal wajar dan peluang untuk mempelajari hal baru',
+  ),
+];
+
+const flashcardQuizzes = [
+  QuizQuestion(
+    text: 'Merasa terancam dengan kesuksesan orang lain',
+    answers: [
+      'Fixed Mindset',
+      'Growth Mindset',
+    ],
+  ),
+  QuizQuestion(
+    text: 'Belajar dari kritik',
+    answers: [
+      'Growth Mindset',
+      'Fixed Mindset',
+    ],
+  ),
+  QuizQuestion(
+    text: 'Kegagalan merupakan sebuah kemunduran yang tidak dapat diterima',
+    answers: [
+      'Fixed Mindset',
+      'Growth Mindset',
+    ],
+  ),
+  QuizQuestion(
+    text: 'Keberhasilan merupakan hasil perkembangan diri',
+    answers: [
+      'Growth Mindset',
+      'Fixed Mindset',
+    ],
+  ),
+  QuizQuestion(
+    text: 'Mudah menyerah',
+    answers: [
+      'Fixed Mindset',
+      'Growth Mindset',
+    ],
+  ),
+  QuizQuestion(
+    text: 'Menerima dan menghadapi tantangan',
+    answers: [
+      'Growth Mindset',
+      'Fixed Mindset',
+    ],
+  ),
+  QuizQuestion(
+    text: 'Berfokus pada pembuktian diri',
+    answers: [
+      'Fixed Mindset',
+      'Growth Mindset',
+    ],
+  ),
+  QuizQuestion(
+    text: 'Kesalahan adalah hal wajar dan peluang untuk mempelajari hal baru',
+    answers: [
+      'Growth Mindset',
+      'Fixed Mindset',
+    ],
   ),
 ];
