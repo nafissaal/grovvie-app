@@ -7,8 +7,8 @@ import 'package:grovvie/education/education_page.dart';
 import 'package:grovvie/education/model/course_model.dart';
 import 'package:grovvie/growth_journal/start_journal.dart';
 import 'package:grovvie/mindset_flashcard/flashcard_page.dart';
-import 'package:grovvie/mindset_flashcard/quiz_page.dart';
 import 'package:grovvie/navigation/bottom_navigation_page.dart';
+import 'package:grovvie/quiz/quiz_page.dart';
 import 'package:provider/provider.dart';
 
 class NavigationHelper {
@@ -47,7 +47,7 @@ class NavigationHelper {
   static const String profilePath = '/profile';
 
   static const String coursePath = '/courses/:courseId';
-  static const String quizPath = '/quiz';
+  static const String quizPath = '/quizzes/:quizId';
 
   factory NavigationHelper() {
     return _instance;
@@ -77,11 +77,8 @@ class NavigationHelper {
             routes: [
               GoRoute(
                 path: flashcardPath,
-                pageBuilder: (context, state) {
-                  return getPage(
-                    child: const FlashcardPage(),
-                    state: state,
-                  );
+                builder: (context, state) {
+                  return const FlashcardPage();
                 },
               ),
             ],
@@ -167,7 +164,8 @@ class NavigationHelper {
                 padding: const EdgeInsets.all(30),
                 child: AspectRatio(
                   aspectRatio: 1,
-                  child: Image.network('https://firebasestorage.googleapis.com/v0/b/grovvie.appspot.com/o/app-logo.png?alt=media&token=cb6bdf88-314c-4881-9bb0-194b351a0c6f'),
+                  child: Image.network(
+                      'https://firebasestorage.googleapis.com/v0/b/grovvie.appspot.com/o/app-logo.png?alt=media&token=cb6bdf88-314c-4881-9bb0-194b351a0c6f'),
                 ),
               );
             },
@@ -264,8 +262,9 @@ class NavigationHelper {
       GoRoute(
         path: quizPath,
         pageBuilder: (context, state) {
+          final quizId = state.pathParameters['quizId'];
           return getPage(
-            child: const QuizPage(),
+            child: QuizPage(quizId: quizId!),
             state: state,
           );
         },

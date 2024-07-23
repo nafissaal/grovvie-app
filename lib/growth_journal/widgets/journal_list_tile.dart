@@ -23,6 +23,8 @@ class _JournalListTileState extends State<JournalListTile> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 15,
+            vertical: 20),
       itemCount: widget.journals.length,
       itemBuilder: (context, index) => Dismissible(
         key: ValueKey(widget.journals[index]),
@@ -42,6 +44,7 @@ class _JournalListTileState extends State<JournalListTile> {
         },
         child: GestureDetector(
           onTap: () {
+            // change push to pop
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => SavedJournal(journal: widget.journals[index]),

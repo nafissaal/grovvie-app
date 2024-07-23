@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:grovvie/education/model/course_model.dart';
+import 'package:grovvie/navigation/navigation_helper.dart';
 
 class CardBuilder extends StatelessWidget {
   const CardBuilder({
     super.key,
     required this.content,
-    required this.onTapCard,
   });
 
   final CourseContent content;
-  final VoidCallback onTapCard;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +21,7 @@ class CardBuilder extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             splashColor: Theme.of(context).colorScheme.secondaryContainer,
-            onTap: onTapCard,
+            onTap: () {NavigationHelper.router.push('/courses/${content.courseId}');},
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

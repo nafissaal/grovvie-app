@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:grovvie/mindset_flashcard/flashcard_model.dart';
-import 'package:grovvie/mindset_flashcard/widget/questions_summary/questions_summary.dart';
+import 'package:grovvie/quiz/quiz_model.dart';
+import 'package:grovvie/quiz/widgets/questions_summary/questions_summary.dart';
 
 class ResultsScreen extends StatelessWidget {
   const ResultsScreen({
     super.key,
     required this.chosenAnswers,
     required this.onRestart,
+    required this.questions,
   });
 
+  final List<QuizQuestion> questions;
   final void Function() onRestart;
   final List<String> chosenAnswers;
 
@@ -19,8 +21,8 @@ class ResultsScreen extends StatelessWidget {
       summary.add(
         {
           'question_index': i,
-          'question': flashcardQuizzes[i].text,
-          'correct_answer': flashcardQuizzes[i].answers[0],
+          'question': questions[i].text,
+          'correct_answer': questions[i].answers[0],
           'user_answer': chosenAnswers[i]
         },
       );
@@ -31,7 +33,7 @@ class ResultsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final numTotalQuestions = flashcardQuizzes.length;
+    final numTotalQuestions = questions.length;
     final numCorrectQuestions = summaryData
         .where(
           (data) => data['user_answer'] == data['correct_answer'],
@@ -48,7 +50,7 @@ class ResultsScreen extends StatelessWidget {
             Text(
               'Anda menjawab $numCorrectQuestions dari $numTotalQuestions pertanyaan dengan benar',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleSmall,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 30),
             QuestionsSummary(summaryData),
@@ -56,7 +58,7 @@ class ResultsScreen extends StatelessWidget {
             TextButton.icon(
               onPressed: onRestart,
               icon: const Icon(Icons.refresh),
-              label: const Text('Restart Quiz!'),
+              label: const Text('Ulangi Kuis!'),
             ),
           ],
         ),

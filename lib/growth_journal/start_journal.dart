@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grovvie/application_state.dart';
-import 'package:grovvie/firestore_service.dart';
+import 'package:grovvie/growth_journal/firestore_service.dart';
 import 'package:grovvie/growth_journal/journal_page.dart';
 import 'package:grovvie/growth_journal/model/journal_model.dart';
 import 'package:grovvie/growth_journal/widgets/journal_list_tile.dart';
@@ -116,7 +116,7 @@ class _StartJournalState extends State<StartJournal> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Isi jurnal ini jika kamu merasa tidak puas, takut, cemas, atau emosi negatif lainnya. Jurnal ini lebih baik digunakan sebagai pendaping terapi, tunjukkan jurnal ini ke terapis pada saat konsultasi.',
+                              'Isi jurnal ini jika kamu merasa tidak puas, takut, cemas, atau emosi negatif lainnya. Jurnal ini lebih baik digunakan sebagai pendamping terapi, tunjukkan jurnal ini ke terapis pada saat konsultasi.',
                               style: Theme.of(context).textTheme.labelSmall,
                               textAlign: TextAlign.center,
                             ),

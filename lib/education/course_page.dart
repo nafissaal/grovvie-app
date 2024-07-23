@@ -64,9 +64,7 @@ class _CoursePageState extends State<CoursePage> {
                       player,
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 20,
-                        ),
+                            horizontal: 15, vertical: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -76,7 +74,6 @@ class _CoursePageState extends State<CoursePage> {
                             ),
                             const SizedBox(height: 20),
                             Text(widget.content.about),
-
                           ],
                         ),
                       ),

@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:grovvie/mindset_flashcard/flashcard_model.dart';
 import 'package:grovvie/navigation/navigation_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,9 +19,24 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
   int _currentFlashcardIndex = 0;
 
-  FlashcardData get currentFlashcard => flashcards[_currentFlashcardIndex];
+  List<FlashcardData> flashcards = [];
 
   final FlipCardController _controller = FlipCardController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchFlashcards();
+  }
+
+  Future<void> fetchFlashcards() async {
+    flashcards = await FlashcardData.fetchFlashcards();
+    setState(() {});
+  }
+
+  FlashcardData get currentFlashcard => flashcards.isNotEmpty
+      ? flashcards[_currentFlashcardIndex]
+      : FlashcardData();
 
   void _showFlashcardDialog() {
     showDialog(
@@ -52,18 +67,20 @@ class _FlashcardPageState extends State<FlashcardPage> {
     );
   }
 
-  void nextFlashcard() {
+  void _nextFlashcard() {
     setState(() {
       _currentFlashcardIndex = (_currentFlashcardIndex + 1) % flashcards.length;
     });
   }
 
-  void flipCard() {
+  void _flipCard() {
     _controller.toggleCard();
   }
 
-  void _navigateToQuiz() {
-    context.push(NavigationHelper.quizPath);
+  Future<String> fetchQuizId() async {
+    // Logic to fetch the quizId from Firestore. Replace this with your own logic.
+    final quizDoc = await FirebaseFirestore.instance.collection('quizzes').limit(1).get();
+    return quizDoc.docs.first.id;
   }
 
   @override
@@ -78,53 +95,54 @@ class _FlashcardPageState extends State<FlashcardPage> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(30),
-        scrollDirection: Axis.vertical,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FlashcardBuilder(
-                flashcardData: currentFlashcard,
-                controller: _controller,
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FilledButton.icon(
-                    onPressed: flipCard,
-                    icon: const Icon(
-                      Icons.change_circle_outlined,
+      body: flashcards.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(30),
+              scrollDirection: Axis.vertical,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FlashcardBuilder(
+                      flashcardData: currentFlashcard,
+                      controller: _controller,
                     ),
-                    label: const Text('Balik'),
-                  ),
-                  const SizedBox(width: 15),
-                  OutlinedButton(
-                    onPressed: nextFlashcard,
-                    child: const Row(
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('Selanjutnya'),
-                        SizedBox(width: 5),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 20,
+                        FilledButton.icon(
+                          onPressed: _flipCard,
+                          icon: const Icon(Icons.change_circle_outlined),
+                          label: const Text('Balik'),
+                        ),
+                        const SizedBox(width: 15),
+                        OutlinedButton(
+                          onPressed: _nextFlashcard,
+                          child: const Row(
+                            children: [
+                              Text('Selanjutnya'),
+                              SizedBox(width: 5),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 20,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    TextButton(
+                      onPressed: () async { String quizId = await fetchQuizId();
+                        NavigationHelper.router.go('/quizzes/$quizId');},
+                      child: const Text('Kerjakan kuis'),
+                    ),
+                  ],
+                ),
               ),
-              TextButton(
-                onPressed: _navigateToQuiz,
-                child: const Text('Kerjakan kuis'),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

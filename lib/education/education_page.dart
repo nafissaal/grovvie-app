@@ -2,15 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grovvie/education/model/course_model.dart';
 import 'package:grovvie/education/widget/card_builder.dart';
-import 'package:grovvie/navigation/navigation_helper.dart';
 
 class EducationPage extends StatelessWidget {
   const EducationPage({super.key});
-
-  void _navigateToCourse(BuildContext context, String courseId) {
-    final route = '/courses/$courseId';
-    NavigationHelper.router.push(route);
-  }
 
   Future<List<CourseContent>> _fetchCourses() async {
     final querySnapshot =
@@ -52,12 +46,7 @@ class EducationPage extends StatelessWidget {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                for (final content in courses)
-                  CardBuilder(
-                    content: content,
-                    onTapCard: () =>
-                        _navigateToCourse(context, content.courseId),
-                  ),
+                for (final content in courses) CardBuilder(content: content),
               ],
             ),
           );

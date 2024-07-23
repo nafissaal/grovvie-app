@@ -48,13 +48,13 @@ class _FlashcardBuilderState extends State<FlashcardBuilder> {
                 child: Column(
                   children: [
                     Text(
-                      widget.flashcardData.title,
+                      widget.flashcardData.title!,
                       style: Theme.of(context).textTheme.titleMedium,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      widget.flashcardData.fixedMindset,
+                      widget.flashcardData.fixedMindset!,
                       style: Theme.of(context).textTheme.headlineSmall,
                       textAlign: TextAlign.center,
                     ),
@@ -82,13 +82,13 @@ class _FlashcardBuilderState extends State<FlashcardBuilder> {
                 child: Column(
                   children: [
                     Text(
-                      widget.flashcardData.title,
+                      widget.flashcardData.title!,
                       style: Theme.of(context).textTheme.titleMedium,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      widget.flashcardData.growthMindset,
+                      widget.flashcardData.growthMindset!,
                       style: Theme.of(context).textTheme.headlineSmall,
                       textAlign: TextAlign.center,
                     ),
