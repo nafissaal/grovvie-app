@@ -135,7 +135,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     ),
                     TextButton(
                       onPressed: () async { String quizId = await fetchQuizId();
-                        NavigationHelper.router.go('/quizzes/$quizId');},
+                        NavigationHelper.router.push('/quizzes/$quizId');},
                       child: const Text('Kerjakan kuis'),
                     ),
                   ],
