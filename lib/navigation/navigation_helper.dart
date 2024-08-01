@@ -164,8 +164,8 @@ class NavigationHelper {
                 padding: const EdgeInsets.all(30),
                 child: AspectRatio(
                   aspectRatio: 1,
-                  child: Image.network(
-                      'https://firebasestorage.googleapis.com/v0/b/grovvie.appspot.com/o/app-logo.png?alt=media&token=cb6bdf88-314c-4881-9bb0-194b351a0c6f'),
+                  child: Image.asset(
+                      'assets/images/app-logo.png'),
                 ),
               );
             },

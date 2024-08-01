@@ -49,6 +49,8 @@ dependencies:
   youtube_player_iframe: ^5.1.2
   flutter_native_splash: ^2.4.0
   firebase_storage: ^12.1.0
+  printing: ^5.13.1
+  pdf: ^3.11.0
 
 flutter_native_splash:
   color: "#E1E994"
@@ -78,7 +80,7 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
   #   - assets/images/you-can-learn-anything.png
   #   - assets/images/developing-a-growth-mindset.png
   #   - assets/images/growth-mindset-introduction.png
@@ -86,8 +88,8 @@ flutter:
   #   - assets/images/fixed-mindset-antidote.png
   #   - assets/images/growth-mindset-origin.png
   #   - assets/images/marva-collins.jpeg
-  #   - assets/images/app-logo.png
-  #   - assets/images/splash-screen.png
+    - assets/images/app-logo.png
+    - assets/images/splash-screen.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -78,7 +78,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
   }
 
   Future<String> fetchQuizId() async {
-    // Logic to fetch the quizId from Firestore. Replace this with your own logic.
     final quizDoc = await FirebaseFirestore.instance.collection('quizzes').limit(1).get();
     return quizDoc.docs.first.id;
   }
