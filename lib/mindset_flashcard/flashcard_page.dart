@@ -115,7 +115,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         FilledButton.icon(
                           onPressed: _flipCard,
                           icon: const Icon(Icons.change_circle_outlined),
-                          label: const Text('Balik'),
+                          label: const Text('Putar'),
                         ),
                         const SizedBox(width: 15),
                         OutlinedButton(
